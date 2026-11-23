@@ -1,0 +1,68 @@
+name: release
+
+# 只允许「打 tag」触发：普通 push 到分支不会启动编译。
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS (Apple Silicon)
+            platform: macos-latest
+            target: aarch64-apple-darwin
+            args: --target aarch64-apple-darwin
+          - name: macOS (Intel)
+            platform: macos-latest
+            target: x86_64-apple-darwin
+            args: --target x86_64-apple-darwin
+          - name: Windows (x64)
+            platform: windows-latest
+            target: ""
+            args: ""
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache Rust
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: ./src-tauri -> target
+          key: ${{ matrix.target }}
+
+      - name: Install frontend deps
+        run: npm ci
+
+      - name: Build & publish
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "云盘上传器 ${{ github.ref_name }}"
+          releaseBody: |
+            自动构建产物：macOS (Apple Silicon / Intel) 与 Windows (x64)。
+
+            > 应用不内置任何密钥，首次启动需填写自己的开放平台 App ID 与 RSA 私钥。
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}
