@@ -53,6 +53,18 @@ git push origin v0.1.0
 
 推送 tag 后 CI 会并行构建 macOS(arm64/x64) 与 Windows(x64)，产物自动挂到同名 Release。**推送普通提交不会触发任何编译。**
 
+## 联调测试（可选）
+
+仓库里带了一个真实接口的集成测试，凭据不落库、只从环境变量与本机目录读：
+
+```bash
+export NCM_APP_ID=<你的 App ID>
+export NCM_SECRETS=~/.ncm-secrets      # 内含 private_key.pem / tokens.json
+cd src-tauri && cargo test --test live -- --nocapture
+```
+
+缺环境变量或凭据时测试直接跳过，所以 CI 与 fork 上都能跑。
+
 ## 安全
 
 - 应用**不内置任何密钥**；App ID 与私钥保存在本机应用数据目录（`credentials.json`，权限 `0600`），只用于本地签名请求。

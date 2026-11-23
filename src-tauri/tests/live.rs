@@ -8,8 +8,6 @@ use std::path::{Path, PathBuf};
 use ncm_cloud_drive_lib::api::{auth, cloud, Endpoint};
 use ncm_cloud_drive_lib::state::{parse_key, Device};
 
-const APP_ID: &str = "b3010d0000000000a2dd0a8e41f88035";
-
 fn secrets_dir() -> PathBuf {
     match std::env::var("NCM_SECRETS") {
         Ok(p) => PathBuf::from(p),
@@ -35,6 +33,13 @@ fn md5_of(path: &Path) -> String {
 
 #[tokio::test]
 async fn live_sign_and_upload_check() {
+    let app_id = match std::env::var("NCM_APP_ID") {
+        Ok(v) if !v.trim().is_empty() => v,
+        _ => {
+            eprintln!("跳过：没有设置 NCM_APP_ID 环境变量");
+            return;
+        }
+    };
     let dir = secrets_dir();
     let key_path = dir.join("private_key.pem");
     let token_path = dir.join("tokens.json");
@@ -63,7 +68,7 @@ async fn live_sign_and_upload_check() {
     let ep = Endpoint {
         http: &http,
         key: &key,
-        app_id: APP_ID,
+        app_id: &app_id,
         device: &device_json,
         device_id: &device.device_id,
     };
