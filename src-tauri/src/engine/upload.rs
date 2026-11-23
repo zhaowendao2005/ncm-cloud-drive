@@ -39,6 +39,11 @@ async fn run(app: AppHandle, st: SharedState, files: Vec<String>) {
             return;
         }
     };
+    if !st.token_valid() {
+        emit_log(&app, "error", "登录已过期（token 有效期 24 小时），请到「账号登录」重新扫码", None);
+        let _ = app.emit("upload://running", false);
+        return;
+    }
     if st.busy.swap(true, Ordering::SeqCst) {
         emit_log(&app, "warn", "已有上传任务在进行中", None);
         return;

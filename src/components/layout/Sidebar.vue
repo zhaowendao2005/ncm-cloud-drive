@@ -19,8 +19,11 @@ const items = computed(() => [
   <aside
     :class="cn('relative flex h-full flex-col border-r border-white/[0.06] bg-black/20 transition-[width] duration-300 ease-[cubic-bezier(.4,0,.2,1)]', ui.collapsed ? 'w-[72px]' : 'w-[236px]')"
   >
+    <!-- 顶部留白：macOS 红绿灯悬浮在内容之上（titleBarStyle = Overlay），这里让出可拖动区 -->
+    <div class="drag-region h-7 shrink-0" />
+
     <!-- brand -->
-    <div class="flex h-16 items-center gap-2.5 px-4">
+    <div class="drag-region flex h-14 items-center gap-2.5 px-4">
       <div class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary shadow-[0_0_20px_-4px] shadow-primary/60">
         <CloudUpload class="h-[18px] w-[18px] text-white" :stroke-width="2.1" />
       </div>

@@ -36,12 +36,15 @@ function submitCredentials() {
 </script>
 
 <template>
-  <div class="flex h-full flex-col overflow-y-auto">
+  <div class="flex h-full flex-col overflow-hidden">
     <header class="drag-region flex h-16 shrink-0 items-center px-8">
-      <div class="no-drag text-[13px] text-muted-foreground">账号登录</div>
+      <div>
+        <h1 class="text-[15px] font-semibold tracking-tight">账号登录</h1>
+        <p class="text-[11.5px] text-muted-foreground">填写开放平台凭据，再用网易云音乐 App 扫码</p>
+      </div>
     </header>
 
-    <div class="flex flex-1 items-center justify-center px-8 pb-16">
+    <div class="flex-1 overflow-y-auto px-8 pb-10">
       <div class="w-full max-w-[820px]">
         <!-- 已登录 -->
         <Card v-if="auth.loggedIn" class="overflow-hidden">
@@ -65,13 +68,13 @@ function submitCredentials() {
         <!-- 未登录 -->
 
         <!-- 首次运行：填写开放平台凭据 -->
-        <Card v-else-if="!auth.hasCredentials" class="p-8">
+        <Card v-else-if="!auth.hasCredentials" class="max-w-[620px] p-8">
           <div class="flex items-start gap-3">
             <div class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/12 text-primary">
               <KeyRound class="h-4.5 w-4.5" />
             </div>
             <div>
-              <h1 class="text-[19px] font-semibold tracking-tight">先配置你的开放平台凭据</h1>
+              <h2 class="text-[15px] font-semibold tracking-tight">先配置你的开放平台凭据</h2>
               <p class="mt-1 max-w-lg text-[12.5px] leading-relaxed text-muted-foreground">
                 在网易云音乐开放平台创建应用后可以得到 App ID 与 RSA 私钥。它们只保存在本机
                 <code class="mx-1 rounded bg-white/[0.06] px-1 py-0.5 font-mono text-[11px]">~/Library/Application Support/com.qihoo.ncmclouddrive/</code>
@@ -86,7 +89,7 @@ function submitCredentials() {
               <input
                 v-model="appId"
                 spellcheck="false"
-                placeholder="b3010d0000000000a2dd0a8e41f88035"
+                placeholder="粘贴开放平台控制台里的 App ID"
                 class="h-10 rounded-lg border border-white/10 bg-black/30 px-3 font-mono text-[12.5px] text-foreground placeholder:text-muted-foreground/60 focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </label>
@@ -107,7 +110,7 @@ function submitCredentials() {
             {{ auth.credentialsError }}
           </p>
 
-          <div class="mt-7 flex items-center justify-between">
+          <div class="mt-7 flex items-center justify-between gap-4">
             <span class="flex items-center gap-2 text-[11.5px] text-muted-foreground">
               <ShieldCheck class="h-3.5 w-3.5 text-emerald-500/80" /> 仅本机保存，不经过任何第三方
             </span>
@@ -119,7 +122,7 @@ function submitCredentials() {
           </div>
         </Card>
 
-        <div v-else class="grid gap-6 md:grid-cols-[320px_1fr]">
+        <div v-else class="grid max-w-[820px] gap-6 md:grid-cols-[300px_1fr] md:items-center">
           <Card class="p-5">
             <div class="relative grid aspect-square place-items-center overflow-hidden rounded-lg bg-white">
               <img v-if="showQr" :src="auth.qrDataUrl" class="h-full w-full object-contain p-3" alt="登录二维码" />
@@ -139,7 +142,7 @@ function submitCredentials() {
           </Card>
 
           <div class="flex flex-col justify-center">
-            <h1 class="text-[26px] font-semibold leading-tight tracking-tight">用网易云音乐 App 扫码登录</h1>
+            <h2 class="text-[20px] font-semibold leading-tight tracking-tight">用网易云音乐 App 扫码登录</h2>
             <p class="mt-2 max-w-md text-[13px] leading-relaxed text-muted-foreground">
               登录后即可把你的音乐文件上传到个人云盘。凭据只保存在本机，不会上传到任何第三方服务器。
             </p>
