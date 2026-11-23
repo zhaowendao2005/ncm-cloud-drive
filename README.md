@@ -44,7 +44,10 @@ npm run tauri build    # 本机打包
 ## 发布
 
 ```bash
-git tag v0.1.0
+git remote add origin git@github.com:<你的账号>/<仓库名>.git
+git push -u origin main --tags    # 只推分支不会触发编译
+
+git tag v0.1.0                     # 打版本 tag 才会触发
 git push origin v0.1.0
 ```
 
@@ -55,6 +58,7 @@ git push origin v0.1.0
 - 应用**不内置任何密钥**；App ID 与私钥保存在本机应用数据目录（`credentials.json`，权限 `0600`），只用于本地签名请求。
 - 私钥一旦泄露（贴到聊天、提交进仓库），必须去开放平台重置。
 - token 与设备指纹（deviceId）绑定：换设备或改动 device 字段后必须重新扫码。
+- 开放平台的 accessToken 有效期 24 小时（`expireTime=86400`），到期后应用会提示重新扫码；扫码只需一次点击，不需要再填 App ID。
 
 ## 已知限制
 
